@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>973024065073-7do25via81pb744g6pkmet5t8qh2n7tu.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.973024065073-7do25via81pb744g6pkmet5t8qh2n7tu</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>973024065073-1aft5j9cvsaq7q7jga4v5dt2e5ql4fa1.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyC7eX0MoL2ExSk6dy7QlNCldj7sm32mQcU</string>
+	<key>GCM_SENDER_ID</key>
+	<string>973024065073</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.AustinCap.Joalarm</string>
+	<key>PROJECT_ID</key>
+	<string>joalarm-6a968</string>
+	<key>STORAGE_BUCKET</key>
+	<string>joalarm-6a968.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:973024065073:ios:0d019e792fa90c09b34710</string>
+</dict>
+</plist>
