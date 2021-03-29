@@ -1,7 +1,4 @@
-platform :ios, '8.0'
-use_frameworks!
+platform :ios, ‘10.0’
 
-target 'Runner' do
-  pod 'Firebase/Analytics'
-  pod 'Firebase/Messaging'
-end
+pod 'Firebase/Analytics'
+pod 'Firebase/Messaging'
