@@ -1,7 +1,7 @@
 platform :ios, '8.0'
 use_frameworks!
 
-target 'MyApp' do
+target 'Runner' do
   pod 'Firebase/Analytics'
   pod 'Firebase/Messaging'
 end
