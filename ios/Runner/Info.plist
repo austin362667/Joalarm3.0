@@ -32,6 +32,8 @@
 	<string>This app requires access to the the GPS.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>This app requires access to the the GPS always.</string>
+	<key>aps-environment</key>
+	<string>production</string>
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSAllowsLocalNetworking</key>
