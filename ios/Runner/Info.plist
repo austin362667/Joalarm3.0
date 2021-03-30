@@ -36,6 +36,12 @@
 	<string>production</string>
 	<key>NSAppTransportSecurity</key>
 	<dict>
+	<key>UIBackgroundModes</key>
+    <array>
+        <string>remote-notification</string>
+    </array>
+	</dict>
+	<dict>
 		<key>NSAllowsLocalNetworking</key>
 		<true/>
 	</dict>
