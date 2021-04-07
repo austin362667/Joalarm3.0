@@ -16,7 +16,7 @@ import 'package:joalarm/main.dart';
 final safeStorage = FlutterSecureStorage();
 File? _image;
 
-class OnBoardingPage extends StatelessWidget {
+class SignupPage extends StatelessWidget {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
@@ -112,30 +112,30 @@ class OnBoardingPage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              ElevatedButton(
-                onPressed: () async {
-                  var username = _usernameController.text;
-                  var password = _passwordController.text;
-                  var jwt = await attemptLogIn(username, password);
-                  print(jwt != 'Failed..');
-                  if (jwt != 'Failed..' &&
-                      username.isNotEmpty &&
-                      password.isNotEmpty) {
-                    safeStorage.write(key: "jwt", value: jwt);
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => HomePage.fromBase64(jwt)));
-                  } else {
-                    displayDialog(context, "Ooops!錯誤..", "沒有這個帳號(前往[註冊]或檢查密碼)");
-                  }
-                },
-                child: Text("登入"),
-                style: OutlinedButton.styleFrom(
-                  backgroundColor: Colors.black,
-                ),
-              ),
-              SizedBox(width: 20),
+              // ElevatedButton(
+              //   onPressed: () async {
+              //     var username = _usernameController.text;
+              //     var password = _passwordController.text;
+              //     var jwt = await attemptLogIn(username, password);
+              //     print(jwt != 'Failed..');
+              //     if (jwt != 'Failed..' &&
+              //         username.isNotEmpty &&
+              //         password.isNotEmpty) {
+              //       safeStorage.write(key: "jwt", value: jwt);
+              //       Navigator.push(
+              //           context,
+              //           MaterialPageRoute(
+              //               builder: (context) => HomePage.fromBase64(jwt)));
+              //     } else {
+              //       displayDialog(context, "Ooops!錯誤..", "沒有這個帳號(前往[註冊]或檢查密碼)");
+              //     }
+              //   },
+              //   child: Text("登入"),
+              //   style: OutlinedButton.styleFrom(
+              //     backgroundColor: Colors.black,
+              //   ),
+              // ),
+              // SizedBox(width: 20),
               ElevatedButton(
                 onPressed: () async {
                   var username = _usernameController.text;
@@ -196,10 +196,12 @@ class _MyPhotoPageState extends State<MyPhotoPage> {
   Widget build(BuildContext context) {
     return Column(children: [
       Center(
-        child: _image == null
-            ? Text('請選取一張照片..')
-            : CircleAvatar(radius: 99, child: Image.file(_image!)),
-      ),
+          child: _image == null
+              ? Text('請選取一張照片..')
+              : CircleAvatar(
+                  radius: 99,
+                  backgroundImage: FileImage(File((_image!.path))),
+                )),
       IconButton(
           tooltip: '請選取相片', onPressed: getImage, icon: Icon(Icons.add_a_photo))
     ]);

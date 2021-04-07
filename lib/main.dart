@@ -1,26 +1,31 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 import 'dart:math';
-// Import the firebase_core plugin
 import 'package:firebase_core/firebase_core.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:joalarm/push_notification_service.dart';
+// Import the firebase_core plugin
+// import 'package:firebase_core/firebase_core.dart';
 // import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:joalarm/constants.dart';
 import 'package:joalarm/introPage.dart';
 import 'package:joalarm/model/user.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:joalarm/onBoardingPage.dart';
+import 'package:joalarm/signupPage.dart';
 import 'package:joalarm/photo.dart';
 import 'package:joalarm/simple_animations_package.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:joalarm/messaging.dart';
+// import 'package:joalarm/messaging.dart';
 import 'package:joalarm/welcome.dart';
 // import 'package:workmanager/workmanager.dart';
 import 'package:joalarm/notification.dart' as notif;
 import 'package:http/http.dart' as http;
+import 'package:share/share.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
-import 'package:like_button/like_button.dart';
+// import 'package:like_button/like_button.dart';
 
 const fetchBackground = "fetchBackground";
 FirebaseMessaging? firebaseMessaging;
@@ -100,7 +105,8 @@ Future<int> attemptUpdateUserToken() async {
   Map<String, dynamic> _payload = json.decode(
       ascii.decode(base64.decode(base64.normalize(_jwt!.split(".")[1]))));
 
-  firebaseMessaging = await configureMessaging();
+  // firebaseMessaging = await configureMessaging();
+
   String? _fmsToken = await firebaseMessaging!.getToken();
   _fmsToken = _fmsToken.toString();
   var url = Uri.parse('$SERVER_IP/userToken');
@@ -145,10 +151,22 @@ Future<int> attemptCreateFollow(String followee) async {
   return res.statusCode;
 }
 
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  // If you're going to use other Firebase services in the background, such as Firestore,
+  // make sure you call `initializeApp` before using other Firebase services.
+  // await Firebase.initializeApp();//not nesseserery
+
+  print("Handling a background message: ${message.messageId}");
+}
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+
+  PushNotificationService _pushNotificationService = PushNotificationService();
+  await _pushNotificationService.initialise();
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+
   // await attemptUpdateUserLocation();
   // await attemptUpdateUserToken();
   runApp(MyApp());
@@ -347,12 +365,26 @@ class SettingPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text("搜尋其他人"),
+          title: Text("加入朋友"),
         ),
         body: Padding(
             padding: EdgeInsets.all(32.0),
             child: Column(
               children: <Widget>[
+                Text("不在名單裡嗎?快邀請朋友加入!"),
+                IconButton(
+                    onPressed: () async {
+                      // print(File('icon.png').path);
+                      // final picker = ImagePicker();
+                      // PickedFile? file =
+                      // await picker.getImage(source: ImageSource.gallery);
+                      // await SocialShare.shareInstagramStory(file!.path);
+                      // Share.share('check out my website https://example.com', subject: 'Look what I made!');
+                      Share.share(
+                          '您被邀請了! 使用 Joalarm(戀愛鈴) https://www.producthunt.com/upcoming/joalarm',
+                          subject: 'Joalarm(戀愛鈴)');
+                    },
+                    icon: Icon(Icons.share)),
                 // Text('You'),
                 // TextField(
                 //   controller: nameController,
@@ -376,7 +408,7 @@ class SettingPage extends StatelessWidget {
                     child: Column(
                       children: <Widget>[
                         Text(
-                          '請輸入對方的名稱\n(不在名單裡嗎?快邀請朋友加入!)',
+                          '搜尋朋友',
                           textAlign: TextAlign.center,
                         ),
                         TypeAheadFormField(
@@ -763,7 +795,48 @@ class CenteredTextWidgetState extends State<CenteredText>
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-          // Container(
+          Container(
+            width: 300,
+            child: Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15.0),
+              ),
+              color: Colors.grey[100],
+              elevation: 5,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  const ListTile(
+                    leading:
+                        Icon(Icons.person_add, size: 50, color: Colors.black),
+                    title: Text('歡迎加入 Joalarm',
+                        style: TextStyle(
+                            color: Colors.black, fontWeight: FontWeight.bold)),
+                    subtitle: Text('為使用Joalarm，您必須先加入一些朋友，出發吧!',
+                        style: TextStyle(color: Colors.black54)),
+                  ),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(primary: Colors.pink),
+                    child: const Text('找朋友',
+                        style: TextStyle(color: Colors.white)),
+                    onPressed: () async {
+                      String? _jwt = await safeStorage.read(key: 'jwt');
+                      Map<String, dynamic> _payload = json.decode(ascii.decode(
+                          base64
+                              .decode(base64.normalize(_jwt!.split(".")[1]))));
+
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => SettingPage(_jwt, _payload),
+                        ),
+                      );
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ), // Container(
           //   // child: InkWell(
           //   child: ScaleTransition(
           //     scale: _tween.animate(CurvedAnimation(
@@ -776,6 +849,7 @@ class CenteredTextWidgetState extends State<CenteredText>
           //   // ),
           //   padding: EdgeInsets.all(15),
           // ),
+          SizedBox(height: 30),
           Container(
             child: isloaded
                 ? Text(
@@ -827,18 +901,18 @@ class CenteredTextWidgetState extends State<CenteredText>
     // return success? !isLiked:isLiked;
     attemptUpdateUserLocation();
     fetch();
-    doSomeThing();
+    // doSomeThing();
     return !isLiked;
   }
 }
 
-Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  // If you're going to use other Firebase services in the background, such as Firestore,
-  // make sure you call `initializeApp` before using other Firebase services.
-  // initializeApp();
+// Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+//   // If you're going to use other Firebase services in the background, such as Firestore,
+//   // make sure you call `initializeApp` before using other Firebase services.
+//   // initializeApp();
 
-  print("Handling a background message: ${message.messageId}");
-}
+//   print("Handling a background message: ${message.messageId}");
+// }
 
 class MyApp extends StatelessWidget {
   @override
@@ -866,30 +940,30 @@ void displayDialog(context, title, text) => showDialog(
           AlertDialog(title: Text(title), content: Text(text)),
     );
 
-Future<void> doSomeThing() async {
-  if (true) {
-    print('do');
-    await attemptUpdateUserLocation();
-    await attemptUpdateUserToken();
-    var r = await attemptCheckDistance();
-    var pr = json.decode(r);
-    bool v = pr['data'];
-    String followeeId = pr['followee'];
-    print(followeeId);
+// Future<void> doSomeThing() async {
+//   if (true) {
+//     print('do');
+//     await attemptUpdateUserLocation();
+//     await attemptUpdateUserToken();
+//     var r = await attemptCheckDistance();
+//     var pr = json.decode(r);
+//     bool v = pr['data'];
+//     String followeeId = pr['followee'];
+//     print(followeeId);
 
-    var url = Uri.parse("http://66.228.52.222:3000/userId/$followeeId");
-    var response = await http.get(url);
+//     var url = Uri.parse("http://66.228.52.222:3000/userId/$followeeId");
+//     var response = await http.get(url);
 
-    // var res = await http.get("http://66.228.52.222:3000/userId/$followeeId");
-    JUser _followee = JUser.fromJson(json.decode(response.body.toString()));
-    print(_followee.token);
-    if (v) {
-      await sendAndRetrieveMessage(_followee.token!, '💖💖100m內有人敲響妳/你的戀愛鈴呢!');
-    } else {
-      await sendAndRetrieveMessage(_followee.token!, '敲響妳/你戀愛鈴的人似乎在100m外唷~');
-    }
-  }
-}
+//     // var res = await http.get("http://66.228.52.222:3000/userId/$followeeId");
+//     JUser _followee = JUser.fromJson(json.decode(response.body.toString()));
+//     print(_followee.token);
+//     if (v) {
+//       await sendAndRetrieveMessage(_followee.token!, '💖💖100m內有人敲響妳/你的戀愛鈴呢!');
+//     } else {
+//       await sendAndRetrieveMessage(_followee.token!, '敲響妳/你戀愛鈴的人似乎在100m外唷~');
+//     }
+//   }
+// }
 
 /// Determine the current position of the device.
 ///

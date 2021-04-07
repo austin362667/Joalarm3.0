@@ -35,12 +35,20 @@
 	<key>aps-environment</key>
 	<string>production</string>
 	<key>NSAppTransportSecurity</key>
-	<dict>
 	<key>UIBackgroundModes</key>
     <array>
         <string>remote-notification</string>
     </array>
-	</dict>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>instagram-stories</string>
+		<string>facebook-stories</string>
+		<string>facebook</string>
+		<string>instagram</string>
+		<string>twitter</string>
+		<string>whatsapp</string>
+		<string>tg</string>
+	</array>
 	<key>NSAllowsLocalNetworking</key>
 	<true/>
 	<key>UISupportedInterfaceOrientations</key>
