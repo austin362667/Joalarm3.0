@@ -34,7 +34,6 @@
 	<string>This app requires access to the the GPS always.</string>
 	<key>aps-environment</key>
 	<string>production</string>
-	<key>NSAppTransportSecurity</key>
 	<key>UIBackgroundModes</key>
     <array>
         <string>remote-notification</string>
