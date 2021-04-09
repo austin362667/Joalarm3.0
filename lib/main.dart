@@ -4,6 +4,7 @@ import 'dart:io';
 import 'dart:math';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:joalarm/fbSignInPage.dart';
 import 'package:joalarm/push_notification_service.dart';
 // Import the firebase_core plugin
 // import 'package:firebase_core/firebase_core.dart';
@@ -28,7 +29,7 @@ import 'package:flutter_typeahead/flutter_typeahead.dart';
 // import 'package:like_button/like_button.dart';
 
 const fetchBackground = "fetchBackground";
-FirebaseMessaging? firebaseMessaging;
+// FirebaseMessaging? firebaseMessaging;
 bool isLike = false;
 var client = http.Client();
 // void callbackDispatcher() {
@@ -50,7 +51,7 @@ var client = http.Client();
 //     return Future.value(true);
 //   });
 // }
-
+FirebaseMessaging? firebaseMessaging;
 String serverResponse = 'Hi';
 Future<String> attemptGetUser() async {
   String? _jwt = await safeStorage.read(key: 'jwt');
@@ -164,7 +165,7 @@ void main() async {
   await Firebase.initializeApp();
 
   PushNotificationService _pushNotificationService = PushNotificationService();
-  await _pushNotificationService.initialise();
+  firebaseMessaging = await _pushNotificationService.initialise();
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
   // await attemptUpdateUserLocation();
@@ -183,9 +184,9 @@ class HomePage extends StatelessWidget {
 
   void initState() async {
     // super.initState();
-    await attemptUpdateUserLocation();
-    await attemptUpdateUserToken();
-    await attemptCheckDistance();
+    // await attemptUpdateUserLocation();
+    // await attemptUpdateUserToken();
+    // await attemptCheckDistance();
     // Workmanager.initialize(
     //   callbackDispatcher,
     //   isInDebugMode: true,
@@ -365,7 +366,7 @@ class SettingPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text("加入朋友"),
+          title: Text("關注朋友"),
         ),
         body: Padding(
             padding: EdgeInsets.all(32.0),
@@ -381,7 +382,7 @@ class SettingPage extends StatelessWidget {
                       // await SocialShare.shareInstagramStory(file!.path);
                       // Share.share('check out my website https://example.com', subject: 'Look what I made!');
                       Share.share(
-                          '您被邀請了! 使用 Joalarm(戀愛鈴) https://www.producthunt.com/upcoming/joalarm',
+                          '您被邀請了!\n使用 Joalarm(戀愛鈴) https://www.producthunt.com/upcoming/joalarm',
                           subject: 'Joalarm(戀愛鈴)');
                     },
                     icon: Icon(Icons.share)),
@@ -404,7 +405,7 @@ class SettingPage extends StatelessWidget {
                 Form(
                   key: this._formKey,
                   child: Padding(
-                    padding: EdgeInsets.all(32.0),
+                    padding: EdgeInsets.all(20.0),
                     child: Column(
                       children: <Widget>[
                         Text(
@@ -786,10 +787,17 @@ class CenteredTextWidgetState extends State<CenteredText>
     // );
   }
 
+  int? tmp = 0;
   @override
   Widget build(BuildContext context) {
-    fetch(); //TODO
-    attemptUpdateUserLocation();
+    tmp = tmp! + 1;
+    if (tmp! % 1 == 0) {
+      fetch();
+    }
+    if (tmp! % 10 == 0) {
+      attemptUpdateUserLocation();
+    }
+    //TODO
     return Center(
         child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -812,7 +820,7 @@ class CenteredTextWidgetState extends State<CenteredText>
                     title: Text('歡迎加入 Joalarm',
                         style: TextStyle(
                             color: Colors.black, fontWeight: FontWeight.bold)),
-                    subtitle: Text('為使用Joalarm，您必須先加入一些朋友，出發吧!',
+                    subtitle: Text('為使用Joalarm，您可以先邀請一些朋友，並關注愛慕之人!',
                         style: TextStyle(color: Colors.black54)),
                   ),
                   ElevatedButton(
@@ -926,7 +934,7 @@ class MyApp extends StatelessWidget {
       initialRoute: '/welcome',
       routes: {
         // When navigating to the "/" route, build the FirstScreen widget.
-        '/welcome': (context) => IntroPage(),
+        '/welcome': (context) => FbSignInPage(), //IntroPage(),
         // When navigating to the "/second" route, build the SecondScreen widget.
         // '/setting': (context) => SettingPage(),
       },

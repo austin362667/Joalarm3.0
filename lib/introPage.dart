@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:introduction_screen/introduction_screen.dart';
 import 'package:joalarm/loginPage.dart';
+import 'package:joalarm/main.dart';
 import 'package:joalarm/signupPage.dart';
 
 class IntroPage extends StatelessWidget {
@@ -12,12 +13,18 @@ class IntroPage extends StatelessWidget {
       onDone: () {
         // When done button is press
       },
-      onSkip: () {
-        // You can also override onSkip callback
+      onSkip: () async {
+        String? _jwt = await safeStorage.read(key: 'jwt');
+        if (_jwt != null) {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => HomePage.fromBase64(_jwt)));
+        }
       },
       showSkipButton: false,
       showDoneButton: false,
-      skip: const Icon(Icons.skip_next),
+      skip: const Text('Skip'),
       next: const Icon(Icons.navigate_next),
       // done: const Text("Done", style: TextStyle(fontWeight: FontWeight.w600)),
       dotsDecorator: DotsDecorator(
@@ -73,7 +80,7 @@ List<PageViewModel> listPagesViewModel = [
       crossAxisAlignment: CrossAxisAlignment.center,
       children: const [
         Text(
-          "點擊放大鏡設定\n那個讓您怦然心動的人",
+          "點擊放大鏡關注讓您怦然心動的人",
           textAlign: TextAlign.center,
         ),
       ],

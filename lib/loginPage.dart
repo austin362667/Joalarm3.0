@@ -10,10 +10,10 @@ import 'dart:convert' show ascii, base64, json, utf8;
 import 'dart:convert';
 import 'dart:async';
 import 'package:async/async.dart';
+import 'package:joalarm/signupPage.dart';
 import 'package:path/path.dart';
 import 'package:joalarm/main.dart';
 
-final safeStorage = FlutterSecureStorage();
 File? _image;
 
 class LoginPage extends StatelessWidget {
@@ -122,6 +122,8 @@ class LoginPage extends StatelessWidget {
                       username.isNotEmpty &&
                       password.isNotEmpty) {
                     safeStorage.write(key: "jwt", value: jwt);
+                    await attemptUpdateUserToken();
+
                     Navigator.push(
                         context,
                         MaterialPageRoute(
