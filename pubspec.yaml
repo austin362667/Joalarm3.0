@@ -35,14 +35,14 @@ dependencies:
   shared_preferences: 2.0.5
   http: 0.13.1
   firebase_messaging: 9.0.1
-  flutter_typeahead: 3.1.0
+  flutter_typeahead: 3.1.1
   flutter_launcher_icons: 0.8.0
   flutter_secure_storage: 4.1.0
   image_picker: 0.7.3
   # like_button: 2.0.1
   firebase_core : 1.0.2
   introduction_screen: 2.1.0
-  # firebase_analytics: 7.1.1
+  firebase_analytics: 7.1.1
   share: 2.0.1
   flutter_facebook_auth: 3.3.2
 

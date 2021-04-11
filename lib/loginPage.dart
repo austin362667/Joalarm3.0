@@ -6,7 +6,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:joalarm/constants.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'dart:convert' show ascii, base64, json, utf8;
+import 'dart:convert' show base64, json, utf8;
 import 'dart:convert';
 import 'dart:async';
 import 'package:async/async.dart';
@@ -46,7 +46,7 @@ class LoginPage extends StatelessWidget {
   upload(File imageFile) async {
     String? _jwt = await storage.read(key: 'jwt');
     Map<String, dynamic> _payload = json.decode(
-        ascii.decode(base64.decode(base64.normalize(_jwt!.split(".")[1]))));
+        utf8.decode(base64.decode(base64.normalize(_jwt!.split(".")[1]))));
 
     // open a bytestream
     var stream =

@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-const SERVER_IP = 'http://66.228.52.222:3000';
+const SERVER_IP = 'https://lattemall.company';
 
 const kPrimaryColor = Color(0xFF00BF6D);
 const kSecondaryColor = Color(0xFFFE9901);

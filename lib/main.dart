@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:joalarm/fbSignInPage.dart';
 import 'package:joalarm/push_notification_service.dart';
@@ -27,7 +28,7 @@ import 'package:share/share.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 // import 'package:like_button/like_button.dart';
-
+final safeStorage = FlutterSecureStorage();
 const fetchBackground = "fetchBackground";
 // FirebaseMessaging? firebaseMessaging;
 bool isLike = false;
@@ -56,7 +57,7 @@ String serverResponse = 'Hi';
 Future<String> attemptGetUser() async {
   String? _jwt = await safeStorage.read(key: 'jwt');
   Map<String, dynamic> _payload = json.decode(
-      ascii.decode(base64.decode(base64.normalize(_jwt!.split(".")[1]))));
+      utf8.decode(base64.decode(base64.normalize(_jwt!.split(".")[1]))));
 
   // var res = await http.post('$SERVER_IP/user',
   //     headers: {"Authorization": _jwt},
@@ -75,7 +76,7 @@ Future<int> attemptUpdateUserLocation() async {
   print('location upd');
   String? _jwt = await safeStorage.read(key: 'jwt');
   Map<String, dynamic> _payload = json.decode(
-      ascii.decode(base64.decode(base64.normalize(_jwt!.split(".")[1]))));
+      utf8.decode(base64.decode(base64.normalize(_jwt!.split(".")[1]))));
 
   Position userLocation = await _determinePosition();
   // await Geolocator().getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
@@ -104,7 +105,7 @@ Future<int> attemptUpdateUserLocation() async {
 Future<int> attemptUpdateUserToken() async {
   String? _jwt = await safeStorage.read(key: 'jwt');
   Map<String, dynamic> _payload = json.decode(
-      ascii.decode(base64.decode(base64.normalize(_jwt!.split(".")[1]))));
+      utf8.decode(base64.decode(base64.normalize(_jwt!.split(".")[1]))));
 
   // firebaseMessaging = await configureMessaging();
 
@@ -124,7 +125,7 @@ Future<int> attemptUpdateUserToken() async {
 Future<String> attemptCheckDistance() async {
   String? _jwt = await safeStorage.read(key: 'jwt');
   Map<String, dynamic> _payload = json.decode(
-      ascii.decode(base64.decode(base64.normalize(_jwt!.split(".")[1]))));
+      utf8.decode(base64.decode(base64.normalize(_jwt!.split(".")[1]))));
 
   // var res = await http.post('$SERVER_IP/chkDistance',
   //     headers: {"Authorization": _jwt},
@@ -140,7 +141,7 @@ Future<String> attemptCheckDistance() async {
 Future<int> attemptCreateFollow(String followee) async {
   String? _jwt = await safeStorage.read(key: 'jwt');
   Map<String, dynamic> _payload = json.decode(
-      ascii.decode(base64.decode(base64.normalize(_jwt!.split(".")[1]))));
+      utf8.decode(base64.decode(base64.normalize(_jwt!.split(".")[1]))));
 
   // var res = await http.post('$SERVER_IP/createFollow',
   //     headers: {"Authorization": _jwt},
@@ -178,7 +179,7 @@ class HomePage extends StatelessWidget {
   factory HomePage.fromBase64(String jwt) => HomePage(
       jwt,
       json.decode(
-          ascii.decode(base64.decode(base64.normalize(jwt.split(".")[1])))));
+          utf8.decode(base64.decode(base64.normalize(jwt.split(".")[1])))));
   final String jwt;
   final Map<String, dynamic> payload;
 
@@ -250,7 +251,7 @@ class HomePage extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => ImageUpload(),
+                  builder: (context) => MyPhotoPage(),
                 ),
               );
             },
@@ -346,7 +347,7 @@ class SettingPage extends StatelessWidget {
   factory SettingPage.fromBase64(String jwt) => SettingPage(
       jwt,
       json.decode(
-          ascii.decode(base64.decode(base64.normalize(jwt.split(".")[1])))));
+        utf8.decode(base64.decode(base64.normalize(jwt.split(".")[1])))));
   final String jwt;
   final Map<String, dynamic> payload;
 
@@ -369,11 +370,20 @@ class SettingPage extends StatelessWidget {
           title: Text("關注朋友"),
         ),
         body: Padding(
-            padding: EdgeInsets.all(32.0),
+            padding: EdgeInsets.all(16.0),
             child: Column(
-              children: <Widget>[
-                Text("不在名單裡嗎?快邀請朋友加入!"),
-                IconButton(
+              children: <Widget>[Card(
+                shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15.0),
+              ),
+              color: Colors.grey[100],
+              elevation: 5,child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+                  
+                  children: [
+                Text("不在名單裡嗎? 快邀請朋友加入!"),
+IconButton(
                     onPressed: () async {
                       // print(File('icon.png').path);
                       // final picker = ImagePicker();
@@ -382,10 +392,14 @@ class SettingPage extends StatelessWidget {
                       // await SocialShare.shareInstagramStory(file!.path);
                       // Share.share('check out my website https://example.com', subject: 'Look what I made!');
                       Share.share(
-                          '您被邀請了!\n使用 Joalarm(戀愛鈴) https://www.producthunt.com/upcoming/joalarm',
+                          '您被邀請了!使用 Joalarm(戀愛鈴) https://www.producthunt.com/upcoming/joalarm',
                           subject: 'Joalarm(戀愛鈴)');
                     },
                     icon: Icon(Icons.share)),
+
+                ],),)
+                ,
+                
                 // Text('You'),
                 // TextField(
                 //   controller: nameController,
@@ -405,7 +419,7 @@ class SettingPage extends StatelessWidget {
                 Form(
                   key: this._formKey,
                   child: Padding(
-                    padding: EdgeInsets.all(20.0),
+                    padding: EdgeInsets.all(10.0),
                     child: Column(
                       children: <Widget>[
                         Text(
@@ -427,7 +441,8 @@ class SettingPage extends StatelessWidget {
                                   CircleAvatar(
                                       radius: 25,
                                       backgroundImage: NetworkImage(
-                                        '$SERVER_IP/${suggestion!.image}',
+                                        suggestion!.image.toString().contains('http')?
+                        '${suggestion.image}':'$SERVER_IP/${suggestion.image}',
                                       )),
                                   SizedBox(
                                     width: 5,
@@ -495,7 +510,7 @@ class SettingPage extends StatelessWidget {
 
   Future<List<JUser>> _fetchUserList(String val) async {
     List<JUser> _userList = [];
-    var url = Uri.parse('http://66.228.52.222:3000/autocompleteUser/$val');
+    var url = Uri.parse('$SERVER_IP/autocompleteUser/$val');
     var response = await http.get(url);
     // var response =
     // await http.get('http://66.228.52.222:3000/autocompleteUser/$val');
@@ -768,7 +783,7 @@ class CenteredTextWidgetState extends State<CenteredText>
   fetch() async {
     String? _jwt = await safeStorage.read(key: 'jwt');
     Map<String, dynamic> _payload = json.decode(
-        ascii.decode(base64.decode(base64.normalize(_jwt!.split(".")[1]))));
+        utf8.decode(base64.decode(base64.normalize(_jwt!.split(".")[1]))));
 
     var url = Uri.parse('$SERVER_IP/user');
     var res = await http.post(url,
@@ -791,10 +806,10 @@ class CenteredTextWidgetState extends State<CenteredText>
   @override
   Widget build(BuildContext context) {
     tmp = tmp! + 1;
-    if (tmp! % 1 == 0) {
+    if (tmp! % 5 == 0) {
       fetch();
     }
-    if (tmp! % 10 == 0) {
+    if (tmp! % 100 == 0) {
       attemptUpdateUserLocation();
     }
     //TODO
@@ -829,7 +844,7 @@ class CenteredTextWidgetState extends State<CenteredText>
                         style: TextStyle(color: Colors.white)),
                     onPressed: () async {
                       String? _jwt = await safeStorage.read(key: 'jwt');
-                      Map<String, dynamic> _payload = json.decode(ascii.decode(
+                      Map<String, dynamic> _payload = json.decode(utf8.decode(
                           base64
                               .decode(base64.normalize(_jwt!.split(".")[1]))));
 
