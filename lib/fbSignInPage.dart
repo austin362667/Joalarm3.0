@@ -6,10 +6,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:http/http.dart' as http;
+// import 'package:joalarm/amplitude.dart';
 import 'package:joalarm/main.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:joalarm/constants.dart';
 final _storage = FlutterSecureStorage();
+// final growth = Growth();
 
 
   Future<String> fbSignIn(String? username, String? fbid, String? email, String? photo) async {
@@ -61,6 +63,7 @@ class _FbSignInPageState extends State<FbSignInPage> {
       String? username = _userData!['name'];
       String? fbid = _userData!['id'].toString();
       String? email = _userData!['email'];
+      // await growth.setUserEmail(email!);
       String? photo = _userData!['picture']['data']['url'];
       var jwt = await fbSignIn(username, fbid, email, photo);
       Navigator.push(
@@ -103,6 +106,7 @@ class _FbSignInPageState extends State<FbSignInPage> {
       String? username = _userData!['name'];
       String? fbid = _userData!['id'].toString();
       String? email = _userData!['email'];
+      // await growth.setUserEmail(email!);
       String? photo = _userData!['picture']['data']['url'];
       var jwt = await fbSignIn(username, fbid, email, photo);
       if (jwt != 'Failed..') {
@@ -154,7 +158,7 @@ class _FbSignInPageState extends State<FbSignInPage> {
             child: Image(image: AssetImage('3.png')))),
             SizedBox(height: 30),
                         Text(
-              "歡迎加入 Joalarm\n",
+              "歡迎加入 Crushon\n",
               textAlign: TextAlign.center,
               style: Theme.of(context)
                   .textTheme

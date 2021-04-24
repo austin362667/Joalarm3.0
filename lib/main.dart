@@ -1,10 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'dart:math';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:image_picker/image_picker.dart';
+// import 'package:joalarm/amplitude.dart';
+import 'package:joalarm/face.dart';
 import 'package:joalarm/fbSignInPage.dart';
 import 'package:joalarm/push_notification_service.dart';
 // Import the firebase_core plugin
@@ -27,6 +28,12 @@ import 'package:http/http.dart' as http;
 import 'package:share/share.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
+import 'dart:math';
+
+import 'package:flutter_compass/flutter_compass.dart';
+
+
+
 // import 'package:like_button/like_button.dart';
 final safeStorage = FlutterSecureStorage();
 const fetchBackground = "fetchBackground";
@@ -52,6 +59,7 @@ var client = http.Client();
 //     return Future.value(true);
 //   });
 // }
+double? oneDirection;
 FirebaseMessaging? firebaseMessaging;
 String serverResponse = 'Hi';
 Future<String> attemptGetUser() async {
@@ -73,7 +81,7 @@ Future<String> attemptGetUser() async {
 }
 
 Future<int> attemptUpdateUserLocation() async {
-  print('location upd');
+  // print('location upd');
   String? _jwt = await safeStorage.read(key: 'jwt');
   Map<String, dynamic> _payload = json.decode(
       utf8.decode(base64.decode(base64.normalize(_jwt!.split(".")[1]))));
@@ -153,6 +161,18 @@ Future<int> attemptCreateFollow(String followee) async {
   return res.statusCode;
 }
 
+Future<double> attemptGetTheOne() async {
+  String? _jwt = await safeStorage.read(key: 'jwt');
+  Map<String, dynamic> _payload = json.decode(
+      utf8.decode(base64.decode(base64.normalize(_jwt!.split(".")[1]))));
+
+  var url = Uri.parse('$SERVER_IP/getTheOne');
+  var res = await http.post(url,
+      headers: {"Authorization": _jwt},
+      body: {"userid": "${_payload['userid']}"});
+  return json.decode(res.body.toString())['degrees'];
+}
+
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   // If you're going to use other Firebase services in the background, such as Firestore,
   // make sure you call `initializeApp` before using other Firebase services.
@@ -171,6 +191,8 @@ void main() async {
 
   // await attemptUpdateUserLocation();
   // await attemptUpdateUserToken();
+  // var growth = new Growth();
+  // await growth.exampleForAmplitude();
   runApp(MyApp());
 }
 
@@ -184,6 +206,7 @@ class HomePage extends StatelessWidget {
   final Map<String, dynamic> payload;
 
   void initState() async {
+
     // super.initState();
     // await attemptUpdateUserLocation();
     // await attemptUpdateUserToken();
@@ -238,6 +261,7 @@ class HomePage extends StatelessWidget {
               // Positioned.fill(child: AnimatedBackground()),
               Positioned.fill(child: Particles(20)),
               Positioned.fill(child: CenteredText()),
+              
             ],
           ),
         ),
@@ -270,6 +294,24 @@ class HomePage extends StatelessWidget {
                 context,
                 MaterialPageRoute(
                   builder: (context) => SettingPage(jwt, payload),
+                ),
+              );
+            },
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          FloatingActionButton(
+            backgroundColor: Colors.black,
+            child: Icon(
+              Icons.smart_button,
+            ),
+            onPressed: () {
+              // Navigate to the second screen using a named route.
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => MyFacePage(),
                 ),
               );
             },
@@ -391,9 +433,10 @@ IconButton(
                       // await picker.getImage(source: ImageSource.gallery);
                       // await SocialShare.shareInstagramStory(file!.path);
                       // Share.share('check out my website https://example.com', subject: 'Look what I made!');
+                      // await growth.socialShare();
                       Share.share(
-                          '您被邀請了!使用 Joalarm(戀愛鈴) https://www.producthunt.com/upcoming/joalarm',
-                          subject: 'Joalarm(戀愛鈴)');
+                          '您被邀請了!使用 Crushon(戀愛鈴) https://www.producthunt.com/upcoming/joalarm',
+                          subject: 'Crushon(戀愛鈴)');
                     },
                     icon: Icon(Icons.share)),
 
@@ -482,7 +525,7 @@ IconButton(
                           child: Icon(
                             Icons.done,
                           ),
-                          onPressed: () {
+                          onPressed: () async {
                             if (this._formKey.currentState!.validate()) {
                               this._formKey.currentState!.save();
                               print(this._selectedUser!.id);
@@ -491,6 +534,7 @@ IconButton(
                               // Scaffold.of(context).showSnackBar(SnackBar(
                               //   content: Text('Your Favorite City is ${this._selectedCity}')
                               // ));
+                              // await growth.setTarget();
                               displayDialog(
                                   context,
                                   "成功啦~ 擊掌!",
@@ -800,18 +844,17 @@ class CenteredTextWidgetState extends State<CenteredText>
     // print(
     //   isloaded,
     // );
+    oneDirection = await attemptGetTheOne();
+    print(oneDirection);
+    
   }
 
   int? tmp = 0;
   @override
   Widget build(BuildContext context) {
-    tmp = tmp! + 1;
-    if (tmp! % 5 == 0) {
       fetch();
-    }
-    if (tmp! % 100 == 0) {
       attemptUpdateUserLocation();
-    }
+
     //TODO
     return Center(
         child: Column(
@@ -835,7 +878,7 @@ class CenteredTextWidgetState extends State<CenteredText>
                     title: Text('歡迎加入 Joalarm',
                         style: TextStyle(
                             color: Colors.black, fontWeight: FontWeight.bold)),
-                    subtitle: Text('為使用Joalarm，您可以先邀請一些朋友，並關注愛慕之人!',
+                    subtitle: Text('為使用Crushon，您可以先邀請一些朋友，並關注愛慕之人!',
                         style: TextStyle(color: Colors.black54)),
                   ),
                   ElevatedButton(
@@ -910,9 +953,11 @@ class CenteredTextWidgetState extends State<CenteredText>
           ),
           SizedBox(height: 40),
           Text(
-            'Joalarm',
+            'Crushon',
             style: TextStyle(color: Colors.black, fontWeight: FontWeight.w200),
-          )
+          ),
+          SizedBox(height: 20),
+          _buildCompass()
         ]));
   }
 
@@ -941,7 +986,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Joalarm',
+      title: 'Crushon',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primaryColor: Colors.black,
@@ -1028,3 +1073,51 @@ Future<Position> _determinePosition() async {
   // continue accessing the position of the device.
   return await Geolocator.getCurrentPosition();
 }
+
+  Widget _buildCompass() {
+    return StreamBuilder<CompassEvent>(
+      stream: FlutterCompass.events,
+      builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          return Text('錯誤: ${snapshot.error}');
+        }
+
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+
+        double? direction = snapshot.data!.heading;
+        
+
+        // if direction is null, then device does not support this sensor
+        // show error message
+        if (direction == null)
+          return Center(
+            child: Text("無法偵測方位"),
+          );
+
+        return Material(
+          shape: CircleBorder(),
+          clipBehavior: Clip.antiAlias,
+          elevation: 4.0,
+          child: Container(
+            width: 64,
+            height: 64,
+            padding: EdgeInsets.all(4.0),
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+            ),
+            child: Transform.rotate(
+              angle: ((direction - oneDirection!) * (pi / 180) * -1  - 45),
+              child: Icon(Icons.send)),
+            ),
+          );
+      },
+    );
+  }
+
+
+  

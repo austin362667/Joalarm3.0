@@ -1,5 +1,5 @@
-// import 'package:joalarm/constants.dart';
-// import 'package:joalarm/signin_or_signup_screen.dart';
+// import 'package:Crushon/constants.dart';
+// import 'package:Crushon/signin_or_signup_screen.dart';
 // import 'package:flutter/material.dart';
 
 // class WelcomeScreen extends StatelessWidget {
@@ -13,7 +13,7 @@
 //             Image.asset("welcome_image.png"),
 //             Spacer(flex: 3),
 //             Text(
-//               "歡迎加入 Joalarm\n",
+//               "歡迎加入 Crushon\n",
 //               textAlign: TextAlign.center,
 //               style: Theme.of(context)
 //                   .textTheme

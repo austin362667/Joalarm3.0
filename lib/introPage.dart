@@ -1,9 +1,9 @@
 // import 'package:flutter/material.dart';
 // import 'package:flutter/widgets.dart';
 // import 'package:introduction_screen/introduction_screen.dart';
-// import 'package:joalarm/loginPage.dart';
-// import 'package:joalarm/main.dart';
-// import 'package:joalarm/signupPage.dart';
+// import 'package:Crushon/loginPage.dart';
+// import 'package:Crushon/main.dart';
+// import 'package:Crushon/signupPage.dart';
 
 // class IntroPage extends StatelessWidget {
 //   @override
@@ -41,13 +41,13 @@
 
 // List<PageViewModel> listPagesViewModel = [
 //   PageViewModel(
-//       title: "歡迎使用 Joalarm",
+//       title: "歡迎使用 Crushon",
 //       bodyWidget: Row(
 //         mainAxisAlignment: MainAxisAlignment.center,
 //         crossAxisAlignment: CrossAxisAlignment.center,
 //         children: const [
 //           Text(
-//             "在 Joalarm 的世界裡\n每個人都有專屬的一顆戀愛鈴",
+//             "在 Crushon 的世界裡\n每個人都有專屬的一顆戀愛鈴",
 //             textAlign: TextAlign.center,
 //           ),
 //         ],

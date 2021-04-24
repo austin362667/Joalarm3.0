@@ -7,7 +7,7 @@
 // import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 // import 'package:image_picker/image_picker.dart';
-// import 'package:joalarm/constants.dart';
+// import 'package:Crushon/constants.dart';
 // import 'package:path/path.dart';
 
 // class ImageUpload extends StatefulWidget {
@@ -71,23 +71,23 @@ import 'package:flutter/material.dart';
 
 //   bool isloaded = false;
 //   var result;
-//   fetch() async {
-//     String? _jwt = await storage.read(key: 'jwt');
-//     Map<String, dynamic> _payload = json.decode(
-//         utf8.decode(base64.decode(base64.normalize(_jwt!.split(".")[1]))));
-//     print("fetch: ${_payload['userid']}");
+  // fetch() async {
+  //   String? _jwt = await storage.read(key: 'jwt');
+  //   Map<String, dynamic> _payload = json.decode(
+  //       utf8.decode(base64.decode(base64.normalize(_jwt!.split(".")[1]))));
+  //   print("fetch: ${_payload['userid']}");
 
-//     var url = Uri.parse('$SERVER_IP/image');
-//     var res = await http.post(url, body: {"userid": "${_payload['userid']}"});
+  //   var url = Uri.parse('$SERVER_IP/image');
+  //   var res = await http.post(url, body: {"userid": "${_payload['userid']}"});
 
-//     // var response = await http
-//     // .post('$SERVER_IP/image', body: {"userid": "${_payload['userid']}"});
-//     result = res.body;
-//     print("r   " + result.toString());
-//     setState(() {
-//       isloaded = true;
-//     });
-//   }
+  //   // var response = await http
+  //   // .post('$SERVER_IP/image', body: {"userid": "${_payload['userid']}"});
+  //   result = res.body;
+  //   print("r   " + result.toString());
+  //   setState(() {
+  //     isloaded = true;
+  //   });
+  // }
 
 //   @override
 //   void initState() {
@@ -156,6 +156,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:joalarm/constants.dart';
 import 'package:http/http.dart' as http;
@@ -166,9 +167,13 @@ import 'dart:async';
 import 'package:async/async.dart';
 import 'package:path/path.dart';
 import 'package:joalarm/main.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:path/path.dart' as path;
 
 // final _safeStorage = FlutterSecureStorage();
 File? _image;
+
+
 
 // class SignupPage extends StatelessWidget {
 //   final TextEditingController _usernameController = TextEditingController();
@@ -287,6 +292,17 @@ File? _image;
 //     ));
 //   }
 // }
+// 
+// 
+Future<File> getFileFromNetworkImage(String imageUrl) async {
+  var url = Uri.parse(imageUrl);
+  var response = await http.get(url);
+  final documentDirectory = await getApplicationDocumentsDirectory();
+  String fileName = DateTime.now().millisecondsSinceEpoch.toString();
+  File file = File(path.join(documentDirectory.path, '$fileName.png'));
+  file.writeAsBytes(response.bodyBytes);
+  return file;
+}
 
 class MyPhotoPage extends StatefulWidget {
   @override
@@ -294,16 +310,50 @@ class MyPhotoPage extends StatefulWidget {
 }
 
 class _MyPhotoPageState extends State<MyPhotoPage> {
+// final File file;
+// new File('tmp').createSync();
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    fetch();
+  }
   final picker = ImagePicker();
+var result;
 
-  Future getImage() async {
+    fetch() async {
+    String? _jwt = await storage.read(key: 'jwt');
+    Map<String, dynamic> _payload = json.decode(
+        utf8.decode(base64.decode(base64.normalize(_jwt!.split(".")[1]))));
+    print("fetch: ${_payload['userid']}");
+
+    var url = Uri.parse('$SERVER_IP/image');
+    var res = await http.post(url, body: {"userid": "${_payload['userid']}"});
+
+    // var response = await http
+    // .post('$SERVER_IP/image', body: {"userid": "${_payload['userid']}"});
+    result = res.body;
+    // url = Uri.parse('$SERVER_IP/$result');
+    // res = await http.get(url);
+    
+    print("r   " + result.toString());
+    File? _img = await getFileFromNetworkImage('$SERVER_IP/$result');
+    setState(() {
+      _image = _img;
+      // isloaded = true;
+    });
+  }
+
+  Future<void> getImage() async {
     final pickedFile = await picker.getImage(source: ImageSource.gallery);
 
-    setState(() {
+    setState(() async {
       if (pickedFile != null) {
         _image = File(pickedFile.path);
       } else {
         print('No image selected.');
+        
+        
       }
     });
   }
@@ -370,7 +420,12 @@ class _MyPhotoPageState extends State<MyPhotoPage> {
                 height: 15,
               ),
     ElevatedButton.icon(key: Key('btn2'),
-                onPressed: () => upload(_image!),
+                onPressed: () {
+                  upload(_image!);
+                displayDialog(context,
+                                  "編輯成功",
+                                  "照片已上傳!");
+                },
                 icon: Icon(Icons.upload_rounded),
                 label: Text("確認編輯"),
                 style: OutlinedButton.styleFrom(

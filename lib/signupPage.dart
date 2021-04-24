@@ -3,7 +3,7 @@
 // import 'package:flutter/material.dart';
 // import 'package:flutter/cupertino.dart';
 // import 'package:image_picker/image_picker.dart';
-// import 'package:joalarm/constants.dart';
+// import 'package:Crushon/constants.dart';
 // import 'package:http/http.dart' as http;
 // import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 // import 'dart:convert' show base64, json, utf8;
@@ -11,7 +11,7 @@
 // import 'dart:async';
 // import 'package:async/async.dart';
 // import 'package:path/path.dart';
-// import 'package:joalarm/main.dart';
+// import 'package:Crushon/main.dart';
 
 // final safeStorage = FlutterSecureStorage();
 // File? _image;

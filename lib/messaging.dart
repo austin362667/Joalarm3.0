@@ -68,7 +68,7 @@ sendAndRetrieveMessage(taToken, body) async {
       <String, dynamic>{
         'notification': <String, dynamic>{
           'body': body!,
-          'title': '🔔戀愛鈴:Joalarm🔔'
+          'title': '🔔戀愛鈴:Crushon🔔'
         },
         'priority': 'high',
         'data': <String, dynamic>{
